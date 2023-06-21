@@ -31,44 +31,48 @@ class Program
                 {
                     case "1":
                         ravenDbManager.Menu_Product();
-                        var choice_p = Console.ReadLine();
-                        switch (choice_p)
-                        {
-                            case "1":
-                                ravenDbManager.ListAllProducts();
-                                Console.WriteLine();
-                                break;
-                            case "2":
-                                ravenDbManager.ListAllProductsSortedByName();
-                                Console.WriteLine();
-                                break;
-                            case "3":
-                                ravenDbManager.ListAllProductsSortedByPrice();
-                                Console.WriteLine();
-                                break;
-                            case "4":
-                                ravenDbManager.CreMenu_Product();
-                                break;
-                            case "5":
-                                ravenDbManager.DelMenu_Product();
-                                break;
-                            case "6":
-                                ravenDbManager.UpdMenu_Product();
-                                break;
-                            case "7":
-                                ravenDbManager.QueryProductsByPrice();
-                                break;
-                            case "8":
-                                ravenDbManager.PerformPagingOnProducts();
-                                break;
-                            case "9":
-                                Console.WriteLine("");
-                                return;
-                            default:
-                                Console.WriteLine("Invalid choice.");
-                                break;
-                        }
-                        break;
+                            var choice_p = Console.ReadLine();
+                            switch (choice_p)
+                            {
+                                case "1":
+                                    ravenDbManager.ListAllProducts();
+                                    Console.WriteLine();
+                                    continue;
+                                case "2":
+                                    ravenDbManager.ListAllProductsSortedByName();
+                                    Console.WriteLine();
+                                    continue;
+                                case "3":
+                                    ravenDbManager.ListAllProductsSortedByPrice();
+                                    Console.WriteLine();
+                                    continue;
+                                case "4":
+                                    ravenDbManager.SeaMenu_Product();
+                                    Console.WriteLine();
+                                    continue;
+                                case "5":
+                                    ravenDbManager.CreMenu_Product();
+                                    continue;
+                                case "6":
+                                    ravenDbManager.DelMenu_Product();
+                                    continue;
+                                case "7":
+                                    ravenDbManager.UpdMenu_Product();
+                                    continue;
+                                case "8":
+                                    ravenDbManager.QueryProductsByPrice();
+                                    continue;
+                                case "9":
+                                    ravenDbManager.PerformPagingOnProducts();
+                                    continue;
+                                case "10":
+                                    Console.WriteLine("");
+                                    return;
+                                default:
+                                    Console.WriteLine("Invalid choice.");
+                                    break;
+                            }
+                    break;    
                     case "2":
                         ravenDbManager.Menu_Order();
                         var choice_o = Console.ReadLine();
@@ -140,7 +144,6 @@ class Program
                     case "4":
                         Console.WriteLine("Exiting the application...");
                         return;
-
                     default:
                         Console.WriteLine("Invalid choice.");
                         break;

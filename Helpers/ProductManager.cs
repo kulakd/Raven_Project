@@ -15,13 +15,15 @@ namespace Raven_Project
     public class ProductManager
     {
         private readonly IDocumentStore _store;
-        // Zapytania dynamiczne obsługiwane przez auto indeksy
         public ProductManager(IDocumentStore store)
         {
             _store = store;
             IndexCreation.CreateIndexes(typeof(ProductIndex).Assembly, _store);
             IndexCreation.CreateIndexes(typeof(OrderIndex).Assembly, _store);
             IndexCreation.CreateIndexes(typeof(CustomerIndex).Assembly, _store);
+            IndexCreation.CreateIndexes(typeof(Product_Search).Assembly, _store);
+            IndexCreation.CreateIndexes(typeof(Customers_TotalOrders).Assembly, _store);
+            IndexCreation.CreateIndexes(typeof(Orders_TotalPrice).Assembly, _store);
         }
         #region Product
         public void CreateProduct(Product product)
@@ -126,6 +128,13 @@ namespace Raven_Project
             {
                 var product = session.Load<Product>(productId);
                 return product.Price * quantity;
+            }
+        }
+        public List<Product> SearchProducts(string searchTerm)
+        {
+            using (var session = _store.OpenSession())
+            {
+                return session.Advanced.DocumentQuery<Product>().Search("Name", searchTerm).ToList();
             }
         }
         #endregion
@@ -252,7 +261,6 @@ namespace Raven_Project
                     Console.WriteLine($"{customer.Id} -> {customer.Name} -> {customer.Email} -> {customer.orders.Count()}");
             }
         }
-
         public Customer GetCustomerById(string customerId)
         {
             using (var session = _store.OpenSession())
@@ -311,15 +319,29 @@ namespace Raven_Project
         {
             ListAllProducts();
             Console.Write("Enter product ID: ");
-            var deleteProductId = Console.ReadLine();
+            var deleteProductId = "products/"+Console.ReadLine();
             DeleteProduct(deleteProductId);
             Console.WriteLine("Product deleted successfully.");
+        }
+        public void SeaMenu_Product()
+        {
+            Console.WriteLine("Enter name of products you are looking for:");
+            string searchTerm = Console.ReadLine();
+            List<Product> searchResults = SearchProducts(searchTerm);
+            if (searchResults.Any())
+            {
+                Console.WriteLine($"Search results for '{searchTerm}':");
+                foreach (var product in searchResults)
+                    Console.WriteLine($"Product: {product.Name}, Price: {product.Price}");
+            }
+            else
+                Console.WriteLine($"No search results found for '{searchTerm}'.");
         }
         public void UpdMenu_Product()
         {
             ListAllProducts();
             Console.Write("Enter product ID: ");
-            var updateProductId = Console.ReadLine();
+            var updateProductId = "products/"+Console.ReadLine();
             Console.Write("Enter new product name: ");
             var updatedProductName = Console.ReadLine();
             Console.Write("Enter new product price: ");
@@ -399,7 +421,7 @@ namespace Raven_Project
             var orderNumber = Console.ReadLine();
             ListAllProducts();
             Console.Write("Enter item Id: ");
-            var productId = Console.ReadLine();
+            var productId = "products/" + Console.ReadLine();
             Console.Write("How many: ");
             int quantity = Int32.Parse(Console.ReadLine());
             var order = new Order
@@ -538,7 +560,7 @@ namespace Raven_Project
         {
             ListAllCustomers();
             Console.Write("Enter Customer Id: ");
-            var customerId = Console.ReadLine();
+            var customerId = "customers/" + Console.ReadLine();
             ListAllOrders();
             Console.Write("Enter Order Ids (comma-separated): ");
             var orderIdsInput = Console.ReadLine();
